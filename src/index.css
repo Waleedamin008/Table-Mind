@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --cream: #F5EFE6;
+  --cream-dark: #EDE4D6;
+  --cream-darker: #E0D4C0;
+  --espresso: #2C1810;
+  --espresso-light: #4A2C1A;
+  --terracotta: #C0452A;
+  --terracotta-light: #D4604A;
+  --terracotta-pale: #F5E8E4;
+  --nude: #D4B896;
+  --nude-light: #E8D5BE;
+  --sand: #B8A082;
+  --text-primary: #2C1810;
+  --text-secondary: #6B4C3A;
+  --text-muted: #9A7A68;
+  --border: rgba(44, 24, 16, 0.12);
+  --border-strong: rgba(44, 24, 16, 0.2);
+  --shadow-sm: 0 2px 8px rgba(44, 24, 16, 0.08);
+  --shadow-md: 0 4px 20px rgba(44, 24, 16, 0.12);
+  --shadow-lg: 0 8px 40px rgba(44, 24, 16, 0.16);
+  --success: #3A7D44;
+  --success-bg: #E8F4EA;
+  --warning: #C07830;
+  --warning-bg: #FBF0E0;
+  --danger: #C0452A;
+  --danger-bg: #F5E8E4;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--nude); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sand); }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes notifySlide { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+.scale-in { animation: scaleIn 0.25s ease forwards; }
