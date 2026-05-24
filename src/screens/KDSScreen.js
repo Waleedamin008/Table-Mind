@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { TimerBadge, OnlineBadge } from '../components/Shared';
+import { TimerBadge, OnlineBadge, useViewport } from '../components/Shared';
 import { Bell, Home, ChevronDown } from 'lucide-react';
 
 const COLUMN_CONFIG = [
@@ -77,17 +77,18 @@ function KDSOrderCard({ order, col }) {
 }
 
 export default function KDSScreen() {
-  const { kdsOrders, isOnline, setCurrentScreen } = useApp();
+  const { kdsOrders, isOnline, setCurrentScreen, tick } = useApp();
+  const { isMobile } = useViewport();
 
-  const now = new Date();
+  const now = new Date(tick);
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#1A0F0A', fontFamily: 'var(--font-body)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#1A0F0A', fontFamily: 'var(--font-body)' }}>
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '2px solid var(--border)', padding: '12px 24px', display: 'flex', alignItems: 'center', gap: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ background: '#fff', borderBottom: '2px solid var(--border)', padding: isMobile ? '12px 16px' : '12px 24px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: isMobile ? 0 : 'auto' }}>
           <div style={{ fontSize: 24 }}>🍽️</div>
           <div>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700, color: 'var(--espresso)' }}>
@@ -97,12 +98,12 @@ export default function KDSScreen() {
           </div>
         </div>
 
-        <div style={{ flex: 1, textAlign: 'center' }}>
+        <div style={{ flex: 1, textAlign: isMobile ? 'left' : 'center', minWidth: 180 }}>
           <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--espresso)', fontFamily: 'var(--font-display)' }}>{timeStr}</div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{dateStr}</div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'space-between' : 'flex-end' }}>
           <button style={{ background: 'var(--cream)', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-secondary)' }}>
             All Stations <ChevronDown size={12} />
           </button>
@@ -118,11 +119,11 @@ export default function KDSScreen() {
       </div>
 
       {/* KDS Columns */}
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', gap: 0 }}>
+      <div style={{ flex: 1, overflowX: isMobile ? 'auto' : 'hidden', overflowY: 'hidden', display: 'flex', gap: 0 }}>
         {COLUMN_CONFIG.map(col => {
           const orders = kdsOrders.filter(o => o.status === col.status);
           return (
-            <div key={col.status} style={{ flex: 1, display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+            <div key={col.status} style={{ flex: isMobile ? '0 0 320px' : 1, minWidth: isMobile ? 320 : 'auto', display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255,255,255,0.08)' }}>
               {/* Column header */}
               <div style={{ padding: '12px 16px', borderBottom: `3px solid ${col.color}`, background: 'rgba(255,255,255,0.05)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

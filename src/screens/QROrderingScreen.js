@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useApp } from '../context/AppContext';
-import { MENU_ITEMS, CATEGORIES } from '../data';
-import { Plus, Minus, ShoppingCart, X, Check, Home, ArrowLeft } from 'lucide-react';
+import { MENU_ITEMS, CATEGORIES, TABLES } from '../data';
+import { Plus, Minus, ShoppingCart, X, Check, Home, QrCode } from 'lucide-react';
 
 export default function QROrderingScreen() {
-  const { sendOrderToKitchen, addToCart, cart, cartTotal, serviceCharge, cartGrandTotal, setCurrentScreen, showNotification, setSelectedTable, setOrderType } = useApp();
+  const {
+    sendOrderToKitchen,
+    addToCart,
+    setCurrentScreen,
+    setSelectedTable,
+    selectedTable,
+    setOrderType,
+  } = useApp();
+
   const [category, setCategory] = useState('All');
   const [localCart, setLocalCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
@@ -12,8 +21,31 @@ export default function QROrderingScreen() {
   const [modItem, setModItem] = useState(null);
   const [selectedMods, setSelectedMods] = useState([]);
   const [note, setNote] = useState('');
+  const [showQrCode, setShowQrCode] = useState(true);
 
-  const tableNumber = 'Table 12';
+  const params = new URLSearchParams(window.location.search);
+  const tableParam = params.get('table');
+  const normalizedTable = tableParam ? String(Number.parseInt(tableParam, 10) || 12).padStart(2, '0') : null;
+  const fallbackTable = normalizedTable
+    ? TABLES.find(t => t.number.endsWith(normalizedTable)) || { id: Number.parseInt(tableParam, 10) || 12, number: `Table ${normalizedTable}` }
+    : { id: 12, number: 'Table 12' };
+  const activeTable = selectedTable || fallbackTable;
+  const tableNumber = activeTable?.number || 'Table 12';
+
+  useEffect(() => {
+    setOrderType('Dine In');
+    if (!selectedTable) {
+      setSelectedTable(fallbackTable);
+    }
+  }, [fallbackTable, selectedTable, setOrderType, setSelectedTable]);
+
+  const qrValue = useMemo(() => {
+    const url = new URL(window.location.href);
+    const tableId = activeTable?.id || Number.parseInt(tableParam, 10) || 12;
+    url.searchParams.set('screen', 'qr');
+    url.searchParams.set('table', String(tableId));
+    return url.toString();
+  }, [activeTable, tableParam]);
 
   const localTotal = localCart.reduce((s, i) => s + i.price * i.qty, 0);
   const localCharge = Math.round(localTotal * 0.05);
@@ -27,8 +59,10 @@ export default function QROrderingScreen() {
 
   const addItem = (item, qty = 1, mods = [], n = '') => {
     setLocalCart(prev => {
-      const ex = prev.find(c => c.id === item.id);
-      if (ex) return prev.map(c => c.id === item.id ? { ...c, qty: c.qty + qty } : c);
+      const ex = prev.find(c => c.id === item.id && JSON.stringify(c.modifiers || []) === JSON.stringify(mods) && c.note === n);
+      if (ex) {
+        return prev.map(c => c === ex ? { ...c, qty: c.qty + qty } : c);
+      }
       return [...prev, { ...item, qty, modifiers: mods, note: n }];
     });
   };
@@ -39,9 +73,9 @@ export default function QROrderingScreen() {
 
   const submitOrder = () => {
     if (localCart.length === 0) return;
-    setSelectedTable({ id: 12, number: tableNumber });
+    setSelectedTable(activeTable);
     setOrderType('Dine In');
-    localCart.forEach(item => addToCart(item, item.qty, item.modifiers, item.note));
+    localCart.forEach(item => addToCart(item, item.qty, item.modifiers || [], item.note || ''));
     sendOrderToKitchen();
     setSubmitted(true);
   };
@@ -64,12 +98,12 @@ export default function QROrderingScreen() {
           <div style={{ background: '#fff', borderRadius: 16, padding: 20, marginBottom: 24, border: '1px solid var(--border)', maxWidth: 300 }}>
             {localCart.map((item, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 13, borderBottom: i < localCart.length - 1 ? '1px solid var(--border)' : 'none' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>{item.name} ×{item.qty}</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{item.name} x{item.qty}</span>
                 <span style={{ fontWeight: 600 }}>GH₵ {item.price * item.qty}</span>
               </div>
             ))}
           </div>
-          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 24 }}>Sit back and relax — your food is on its way! 🍽️</p>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 24 }}>Sit back and relax. Your food is on its way!</p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
             <button onClick={() => { setSubmitted(false); setLocalCart([]); }} style={{ background: 'var(--terracotta)', color: '#fff', border: 'none', borderRadius: 12, padding: '12px 20px', cursor: 'pointer', fontSize: 13, fontWeight: 700, fontFamily: 'var(--font-body)' }}>
               Order More
@@ -85,7 +119,6 @@ export default function QROrderingScreen() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAF5EE', fontFamily: 'var(--font-body)', maxWidth: 430, margin: '0 auto', position: 'relative' }}>
-      {/* Header */}
       <div style={{ background: '#fff', padding: '14px 18px', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -105,17 +138,62 @@ export default function QROrderingScreen() {
             <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--espresso)' }}>🪑 {tableNumber}</span>
             <span style={{ fontSize: 10, background: 'var(--cream)', color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 10 }}>Dine In</span>
           </div>
+          <button
+            onClick={() => setShowQrCode(prev => !prev)}
+            style={{
+              background: '#fff',
+              border: '1px solid var(--border)',
+              borderRadius: 10,
+              padding: '6px 10px',
+              cursor: 'pointer',
+              fontSize: 11,
+              fontWeight: 700,
+              fontFamily: 'var(--font-body)',
+              color: 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <QrCode size={13} /> {showQrCode ? 'Hide QR' : 'Show QR'}
+          </button>
         </div>
       </div>
 
-      {/* Hero */}
-      <div style={{ background: 'linear-gradient(135deg, var(--terracotta), #A03018)', padding: '20px 18px', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+      {showQrCode && (
+        <div style={{ padding: '16px 16px 0' }}>
+          <div style={{
+            background: '#fff',
+            borderRadius: 18,
+            border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-sm)',
+            padding: 18,
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--espresso)', marginBottom: 6 }}>
+              Scan to open this table menu
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 14 }}>
+              Deep link: {tableNumber} QR ordering
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <div style={{ background: '#fff', padding: 10, borderRadius: 16, border: '1px solid var(--border)' }}>
+                <QRCodeCanvas value={qrValue} size={180} includeMargin bgColor="#FFFFFF" fgColor="#2C1810" level="M" />
+              </div>
+            </div>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', wordBreak: 'break-all', lineHeight: 1.5 }}>
+              {qrValue}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ background: 'linear-gradient(135deg, var(--terracotta), #A03018)', padding: '20px 18px', color: '#fff', position: 'relative', overflow: 'hidden', marginTop: 16 }}>
         <div style={{ position: 'absolute', right: 16, top: 8, fontSize: 48, opacity: 0.3 }}>🍲</div>
         <div style={{ fontSize: 18, fontWeight: 700, fontFamily: 'var(--font-display)', marginBottom: 4 }}>Craving made simple.</div>
         <div style={{ fontSize: 12, opacity: 0.85 }}>Good food, great experience.</div>
       </div>
 
-      {/* Category tabs */}
       <div style={{ padding: '14px 16px 8px', background: '#fff', borderBottom: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', gap: 6, overflowX: 'auto' }}>
           {CATEGORIES.map(cat => (
@@ -129,7 +207,6 @@ export default function QROrderingScreen() {
         </div>
       </div>
 
-      {/* Items */}
       <div style={{ padding: '12px 14px', paddingBottom: localCart.length > 0 ? 100 : 20 }}>
         {filtered.map((item, i) => {
           const inCart = localCart.find(c => c.id === item.id);
@@ -170,7 +247,6 @@ export default function QROrderingScreen() {
         })}
       </div>
 
-      {/* Cart bar */}
       {localCart.length > 0 && (
         <div style={{
           position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
@@ -181,7 +257,7 @@ export default function QROrderingScreen() {
             <div style={{ marginBottom: 12, maxHeight: 200, overflow: 'auto' }}>
               {localCart.map((item, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', fontSize: 13, borderBottom: i < localCart.length - 1 ? '1px solid var(--border)' : 'none' }}>
-                  <span>{item.emoji} {item.name} ×{item.qty}</span>
+                  <span>{item.emoji} {item.name} x{item.qty}</span>
                   <span style={{ fontWeight: 700 }}>GH₵ {item.price * item.qty}</span>
                 </div>
               ))}
@@ -212,7 +288,6 @@ export default function QROrderingScreen() {
         </div>
       )}
 
-      {/* Modifier modal */}
       {modItem && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
           <div style={{ background: '#fff', borderRadius: '20px 20px 0 0', padding: 24, width: '100%', maxWidth: 430, animation: 'fadeIn 0.2s ease' }}>
@@ -243,7 +318,7 @@ export default function QROrderingScreen() {
         </div>
       )}
 
-      <div style={{ textAlign: 'center', padding: '8px 0 80px', fontSize: 11, color: 'var(--text-muted)' }}>❤️ Made for Ghana</div>
+      <div style={{ textAlign: 'center', padding: '8px 0 80px', fontSize: 11, color: 'var(--text-muted)' }}>Made for Ghana</div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { INITIAL_KDS_ORDERS, ORDER_HISTORY } from '../data';
+import { INITIAL_KDS_ORDERS, ORDER_HISTORY, MENU_ITEMS } from '../data';
 
 const AppContext = createContext();
 
@@ -31,7 +31,21 @@ export function AppProvider({ children }) {
     return () => clearInterval(interval);
   }, []);
 
+  const menuPriceByName = MENU_ITEMS.reduce((acc, item) => {
+    acc[item.name] = item.price;
+    return acc;
+  }, {});
+
   const getElapsedMins = (placedAt) => Math.floor((Date.now() - placedAt) / 60000);
+
+  const calculateOrderTotal = (items = []) => {
+    const subtotal = items.reduce((sum, item) => {
+      const price = menuPriceByName[item.name] || 0;
+      return sum + price * item.qty;
+    }, 0);
+    const serviceFee = Math.round(subtotal * 0.05);
+    return subtotal + serviceFee;
+  };
 
   const showNotification = (msg, type = 'success') => {
     setNotification({ msg, type });
@@ -96,12 +110,13 @@ export function AppProvider({ children }) {
       const order = kdsOrders.find(o => o.id === orderId);
       if (order) {
         const serviceTime = getElapsedMins(order.placedAt);
+        const orderTotal = calculateOrderTotal(order.items);
         const historyEntry = {
           id: order.id,
           table: order.table,
           type: order.type,
           items: order.items.map(i => `${i.name} x${i.qty}`),
-          total: 0,
+          total: orderTotal,
           payment: 'Pending',
           syncStatus: 'Synced',
           serviceTime,

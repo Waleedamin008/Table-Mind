@@ -1,27 +1,56 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Wifi, WifiOff, Bell, ChevronRight, Clock, AlertTriangle } from 'lucide-react';
+import { Wifi, WifiOff, Clock, AlertTriangle } from 'lucide-react';
 
 export function Logo({ size = 'md' }) {
-  const sizes = { sm: { img: 28, text: 16, sub: 9 }, md: { img: 36, text: 20, sub: 10 }, lg: { img: 48, text: 26, sub: 11 } };
+  const sizes = {
+    sm: { img: 54, text: 19, sub: 9, gap: 8 },
+    md: { img: 68, text: 24, sub: 10, gap: 10 },
+    lg: { img: 84, text: 30, sub: 11, gap: 12 },
+  };
   const s = sizes[size];
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-      <div style={{
-        width: s.img, height: s.img, borderRadius: 10, background: 'linear-gradient(135deg, var(--terracotta), var(--espresso))',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: s.img * 0.55, flexShrink: 0,
-        boxShadow: '0 2px 8px rgba(192,69,42,0.3)'
-      }}>🍽️</div>
-      <div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: s.gap, maxWidth: '100%' }}>
+      <img
+        src="/Dashboard logo.png"
+        alt="TableMind dashboard logo"
+        style={{
+          width: s.img,
+          minWidth: s.img,
+          height: 'auto',
+          display: 'block',
+          objectFit: 'contain',
+        }}
+      />
+      <div style={{ minWidth: 0 }}>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: s.text, fontWeight: 700, color: 'var(--espresso)', lineHeight: 1 }}>
           Table<span style={{ color: 'var(--terracotta)' }}>Mind</span>
         </div>
-        <div style={{ fontSize: s.sub, color: 'var(--text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 500 }}>
-          AI-Powered Restaurant
+        <div style={{ fontSize: s.sub, color: 'var(--text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, lineHeight: 1.2, marginTop: 3 }}>
+          {/* AI-Powered Restaurant */}
         </div>
       </div>
     </div>
   );
+}
+
+export function useViewport() {
+  const getWidth = () => (typeof window === 'undefined' ? 1280 : window.innerWidth);
+  const [width, setWidth] = useState(getWidth);
+
+  useEffect(() => {
+    const onResize = () => setWidth(getWidth());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  return {
+    width,
+    isMobile: width < 768,
+    isTablet: width >= 768 && width < 1100,
+    isDesktop: width >= 1100,
+  };
 }
 
 export function OnlineBadge() {

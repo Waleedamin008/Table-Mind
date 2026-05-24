@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Logo, OnlineBadge, Card, Button, Badge } from '../components/Shared';
+import { Logo, OnlineBadge, Card, Badge, useViewport } from '../components/Shared';
 import { MENU_ITEMS } from '../data';
 import { Wifi, WifiOff, RefreshCw, CheckCircle, AlertCircle, Clock, Plus, Home, ArrowRight } from 'lucide-react';
 
@@ -9,6 +9,7 @@ export default function OfflineScreen() {
   const [step, setStep] = useState(0);
   const [offlineCart, setOfflineCart] = useState([]);
   const [orderCreated, setOrderCreated] = useState(false);
+  const { isMobile } = useViewport();
 
   const demoItems = MENU_ITEMS.slice(0, 4);
 
@@ -46,21 +47,34 @@ export default function OfflineScreen() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--cream)', fontFamily: 'var(--font-body)' }}>
       {/* Top bar */}
-      <div style={{ background: '#fff', borderBottom: '1px solid var(--border)', padding: '14px 24px', position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 14 }}>
-        <Logo size="sm" />
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--espresso)', fontFamily: 'var(--font-display)' }}>Offline Mode Demo</div>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Follow the steps to see offline ordering & sync in action</div>
+      <div style={{ background: '#fff', borderBottom: '1px solid var(--border)', padding: isMobile ? '14px 16px' : '14px 24px', position: 'sticky', top: 0, zIndex: 10 }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? 14 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: isMobile ? '100%' : 'auto', minWidth: 0 }}>
+            <div style={{ flexShrink: 0 }}>
+              <Logo size="sm" />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: isMobile ? 14 : 16, fontWeight: 700, color: 'var(--espresso)', fontFamily: 'var(--font-display)', lineHeight: 1.1 }}>
+                Offline Mode
+              </div>
+              {/* <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5, marginTop: 4, maxWidth: isMobile ? 240 : 'none' }}>
+                Follow the steps to see offline ordering and sync in action
+              </div> */}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'space-between' : 'flex-end' }}>
+            <OnlineBadge />
+            <button onClick={() => setCurrentScreen('home')} style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+              <Home size={12} /> Home
+            </button>
+          </div>
         </div>
-        <OnlineBadge />
-        <button onClick={() => setCurrentScreen('home')} style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-secondary)' }}>
-          <Home size={12} /> Home
-        </button>
       </div>
 
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 24px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: isMobile ? '20px 16px' : '32px 24px' }}>
         {/* Progress steps */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginBottom: 40 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, marginBottom: 40, overflowX: 'auto', paddingBottom: 6 }}>
           {STEPS.map((s, i) => (
             <React.Fragment key={s.id}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
@@ -87,7 +101,7 @@ export default function OfflineScreen() {
           background: isOnline ? 'var(--success-bg)' : 'var(--warning-bg)',
           border: `2px solid ${isOnline ? 'var(--success)' : 'var(--warning)'}`,
           borderRadius: 'var(--radius-lg)', padding: '20px 24px', marginBottom: 28,
-          display: 'flex', alignItems: 'center', gap: 16, animation: 'fadeIn 0.3s ease',
+          display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', gap: 16, animation: 'fadeIn 0.3s ease',
         }}>
           {isOnline ? <Wifi size={28} style={{ color: 'var(--success)', flexShrink: 0 }} /> : <WifiOff size={28} style={{ color: 'var(--warning)', flexShrink: 0 }} />}
           <div style={{ flex: 1 }}>
@@ -107,7 +121,7 @@ export default function OfflineScreen() {
           )}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
           {/* Step actions */}
           <div>
             {/* Step 1: Go Offline */}
