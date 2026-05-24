@@ -40,18 +40,20 @@ export default function OrderHistoryScreen() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--cream)', fontFamily: 'var(--font-body)' }}>
       <div style={{ background: '#fff', borderBottom: '1px solid var(--border)', padding: isMobile ? '14px 16px' : '14px 24px', position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-        <Logo size="sm" />
-        <div style={{ flex: 1, minWidth: isMobile ? 0 : 160 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--espresso)', fontFamily: 'var(--font-display)' }}>Order History</div>
-          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>All orders with timing, sync & payment status</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flex: isMobile ? '1 1 100%' : '1 1 auto', minWidth: isMobile ? '100%' : 320 }}>
+          <Logo size="sm" />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--espresso)', fontFamily: 'var(--font-display)' }}>Order History</div>
+            {/* <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>All orders with timing, sync & payment status</div> */}
+          </div>
         </div>
-        <div style={{ order: isMobile ? 2 : 'initial' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', order: isMobile ? 2 : 0 }}>
           <OnlineBadge />
+          <button onClick={() => setCurrentScreen('home')} style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+            <Home size={12} /> Home
+          </button>
         </div>
-        <button onClick={() => setCurrentScreen('home')} style={{ background: 'var(--cream)', border: '1.5px solid var(--border)', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
-          <Home size={12} /> Home
-        </button>
-        <div style={{ position: 'relative', minWidth: isMobile ? '100%' : 220, flex: isMobile ? '1 1 100%' : '0 0 auto', order: isMobile ? 4 : 'initial' }}>
+        <div style={{ position: 'relative', minWidth: isMobile ? '100%' : 240, flex: isMobile ? '1 1 100%' : '0 0 auto', order: isMobile ? 3 : 0 }}>
           <Search size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order or table..."
             style={{ width: '100%', padding: '7px 10px 7px 30px', borderRadius: 8, border: '1.5px solid var(--border)', fontSize: 12, fontFamily: 'var(--font-body)', background: 'var(--cream)', outline: 'none' }} />
