@@ -5,7 +5,7 @@ import { MENU_ITEMS } from '../data';
 import {
   Wifi, WifiOff, RefreshCw, CheckCircle, AlertCircle, Clock, Plus, Home, ArrowRight,
   Target, ClipboardList, Smartphone, Monitor, LayoutDashboard, QrCode, Save, Inbox, Sparkles, Check,
-  CupSoda, Sandwich, Dessert, Utensils
+  Package, CupSoda, Sandwich, Dessert, Utensils
 } from 'lucide-react';
 
 // Helper category icon mapping component
