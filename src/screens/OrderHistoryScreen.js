@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Logo, OnlineBadge, Badge, useViewport } from '../components/Shared';
-import { Search, Home, Clock, CheckCircle, RefreshCw } from 'lucide-react';
+import { Search, Home, Clock, CheckCircle, RefreshCw, ClipboardList, Utensils, ShoppingBag } from 'lucide-react';
 
 export default function OrderHistoryScreen() {
   const { orderHistory, pendingSyncOrders, setCurrentScreen } = useApp();
@@ -63,10 +63,10 @@ export default function OrderHistoryScreen() {
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: isMobile ? '16px' : '24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
           {[
-            { icon: '📋', label: 'Total Orders', value: allOrders.length, color: 'var(--espresso)' },
-            { icon: '✅', label: 'Synced', value: allOrders.filter(o => o.syncStatus === 'Synced').length, color: 'var(--success)' },
-            { icon: '⏳', label: 'Pending Sync', value: allOrders.filter(o => o.syncStatus === 'Pending Sync').length, color: 'var(--warning)' },
-            { icon: '⏱️', label: 'Avg. Service Time', value: `${avgTime} min`, color: 'var(--terracotta)' },
+            { icon: <ClipboardList size={12} style={{ color: 'var(--espresso)', display: 'inline-block', marginRight: 4, verticalAlign: 'middle' }} />, label: 'Total Orders', value: allOrders.length, color: 'var(--espresso)' },
+            { icon: <CheckCircle size={12} style={{ color: 'var(--success)', display: 'inline-block', marginRight: 4, verticalAlign: 'middle' }} />, label: 'Synced', value: allOrders.filter(o => o.syncStatus === 'Synced').length, color: 'var(--success)' },
+            { icon: <RefreshCw size={12} style={{ color: 'var(--warning)', display: 'inline-block', marginRight: 4, verticalAlign: 'middle' }} />, label: 'Pending Sync', value: allOrders.filter(o => o.syncStatus === 'Pending Sync').length, color: 'var(--warning)' },
+            { icon: <Clock size={12} style={{ color: 'var(--terracotta)', display: 'inline-block', marginRight: 4, verticalAlign: 'middle' }} />, label: 'Avg. Service Time', value: `${avgTime} min`, color: 'var(--terracotta)' },
           ].map((s, i) => (
             <div key={i} style={{ background: '#fff', borderRadius: 14, padding: '16px 18px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 6 }}>{s.icon} {s.label}</div>
@@ -116,7 +116,10 @@ export default function OrderHistoryScreen() {
                   </div>
                   <div>
                     <span style={{ fontSize: 11, background: order.type === 'Dine In' ? '#EEF4FC' : 'var(--cream)', color: order.type === 'Dine In' ? '#1A56A0' : 'var(--text-muted)', padding: '2px 8px', borderRadius: 8, fontWeight: 600 }}>
-                      {order.type === 'Dine In' ? '🪑' : '📦'} {order.type}
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        {order.type === 'Dine In' ? <Utensils size={10} style={{ color: '#1A56A0' }} /> : <ShoppingBag size={10} style={{ color: 'var(--text-muted)' }} />}
+                        {order.type}
+                      </span>
                     </span>
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
@@ -146,7 +149,7 @@ export default function OrderHistoryScreen() {
 
           {filtered.length === 0 && (
             <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>📋</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}><ClipboardList size={32} style={{ color: 'var(--text-muted)' }} /></div>
               <div>No orders match your filter</div>
             </div>
           )}

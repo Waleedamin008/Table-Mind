@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/AppContext';
 import { TimerBadge, OnlineBadge, useViewport } from '../components/Shared';
-import { Bell, Home, ChevronDown } from 'lucide-react';
+import { Bell, Home, ChevronDown, Utensils, TableProperties, Package } from 'lucide-react';
 
 const COLUMN_CONFIG = [
   { status: 'new', label: 'New', color: 'var(--terracotta)', bg: 'var(--terracotta-pale)', nextLabel: 'Start Preparing', nextStatus: 'preparing' },
@@ -27,8 +27,8 @@ function KDSOrderCard({ order, col }) {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--espresso)', fontFamily: 'var(--font-display)' }}>#{order.id}</span>
-            <span style={{ fontSize: 10, background: order.type === 'Dine In' ? '#EEF4FC' : 'var(--cream)', color: order.type === 'Dine In' ? '#1A56A0' : 'var(--text-muted)', padding: '2px 6px', borderRadius: 6, fontWeight: 600 }}>
-              {order.type === 'Dine In' ? '🪑' : '📦'} {order.type}
+            <span style={{ fontSize: 10, background: order.type === 'Dine In' ? '#EEF4FC' : 'var(--cream)', color: order.type === 'Dine In' ? '#1A56A0' : 'var(--text-muted)', padding: '2px 6px', borderRadius: 6, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 3 }}>
+              {order.type === 'Dine In' ? <TableProperties size={10} /> : <Package size={10} />} {order.type}
             </span>
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, marginTop: 2 }}>{order.table}</div>
@@ -80,7 +80,7 @@ export default function KDSScreen() {
   const { kdsOrders, isOnline, setCurrentScreen, tick } = useApp();
   const { isMobile } = useViewport();
 
-  const now = new Date(tick);
+  const now = new Date();
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
@@ -88,8 +88,8 @@ export default function KDSScreen() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#1A0F0A', fontFamily: 'var(--font-body)' }}>
       {/* Header */}
       <div style={{ background: '#fff', borderBottom: '2px solid var(--border)', padding: isMobile ? '12px 16px' : '12px 24px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: isMobile ? 0 : 'auto' }}>
-          <div style={{ fontSize: 24 }}>🍽️</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: isMobile ? 0 : 'auto' }}>
+          <div style={{ color: 'var(--terracotta)' }}><Utensils size={24} /></div>
           <div>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700, color: 'var(--espresso)' }}>
               Table<span style={{ color: 'var(--terracotta)' }}>Mind</span>
@@ -159,7 +159,7 @@ export default function KDSScreen() {
 
       {/* Footer */}
       <div style={{ background: '#fff', borderTop: '1px solid var(--border)', padding: '6px 24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>❤️ Made for Ghana</div>
+        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Made for Ghana</div>
       </div>
     </div>
   );

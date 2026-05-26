@@ -1,16 +1,16 @@
 export const MENU_ITEMS = [
-  { id: 1, name: "Jollof Rice", category: "Mains", price: 45, popular: true, emoji: "🍚", description: "Classic Ghanaian jollof with grilled chicken", modifiers: ["Extra Spicy", "No Onions", "Extra Sauce"] },
-  { id: 2, name: "Grilled Tilapia", category: "Mains", price: 65, popular: true, emoji: "🐟", description: "Served with banku and pepper sauce", modifiers: ["Extra Pepper", "No Pepper", "With Shito"] },
-  { id: 3, name: "Banku & Tilapia", category: "Mains", price: 60, popular: false, emoji: "🍲", description: "Traditional banku with grilled tilapia", modifiers: ["Extra Banku", "Extra Fish", "With Shito"] },
-  { id: 4, name: "Waakye", category: "Mains", price: 35, popular: false, emoji: "🍛", description: "Rice and beans with wele, fried fish, egg", modifiers: ["Extra Wele", "No Egg", "With Spaghetti"] },
-  { id: 5, name: "Chicken Light Soup", category: "Mains", price: 40, popular: false, emoji: "🍜", description: "Spiced tomato broth with tender chicken", modifiers: ["Extra Spicy", "Extra Chicken", "No Pepper"] },
-  { id: 6, name: "Kelewele", category: "Sides", price: 20, popular: true, emoji: "🍌", description: "Spicy fried plantain with peanuts", modifiers: ["Spicy", "Extra Spicy", "With Shito"] },
-  { id: 7, name: "Sobolo", category: "Drinks", price: 15, popular: false, emoji: "🥤", description: "Hibiscus flower drink, chilled", modifiers: ["Extra Sweet", "Less Sugar", "With Ginger"] },
-  { id: 8, name: "Fresh Juice", category: "Drinks", price: 20, popular: false, emoji: "🍊", description: "Freshly squeezed seasonal fruit juice", modifiers: ["Orange", "Pineapple", "Mixed"] },
-  { id: 9, name: "Water", category: "Drinks", price: 5, popular: false, emoji: "💧", description: "Bottled still water", modifiers: [] },
-  { id: 10, name: "Fufu & Soup", category: "Mains", price: 50, popular: false, emoji: "🥣", description: "Pounded fufu with light or palm nut soup", modifiers: ["Light Soup", "Palm Nut Soup", "Extra Fufu"] },
-  { id: 11, name: "Fried Rice", category: "Mains", price: 40, popular: false, emoji: "🍳", description: "Egg fried rice with vegetables and chicken", modifiers: ["Extra Chicken", "Vegetarian", "Extra Spicy"] },
-  { id: 12, name: "Chin Chin", category: "Desserts", price: 10, popular: false, emoji: "🍪", description: "Crunchy fried dough snack", modifiers: [] },
+  { id: 1, name: "Jollof Rice", category: "Mains", price: 45, popular: true, emoji: "", description: "Classic Ghanaian jollof with grilled chicken", modifiers: ["Extra Spicy", "No Onions", "Extra Sauce"] },
+  { id: 2, name: "Grilled Tilapia", category: "Mains", price: 65, popular: true, emoji: "", description: "Served with banku and pepper sauce", modifiers: ["Extra Pepper", "No Pepper", "With Shito"] },
+  { id: 3, name: "Banku & Tilapia", category: "Mains", price: 60, popular: false, emoji: "", description: "Traditional banku with grilled tilapia", modifiers: ["Extra Banku", "Extra Fish", "With Shito"] },
+  { id: 4, name: "Waakye", category: "Mains", price: 35, popular: false, emoji: "", description: "Rice and beans with wele, fried fish, egg", modifiers: ["Extra Wele", "No Egg", "With Spaghetti"] },
+  { id: 5, name: "Chicken Light Soup", category: "Mains", price: 40, popular: false, emoji: "", description: "Spiced tomato broth with tender chicken", modifiers: ["Extra Spicy", "Extra Chicken", "No Pepper"] },
+  { id: 6, name: "Kelewele", category: "Sides", price: 20, popular: true, emoji: "", description: "Spicy fried plantain with peanuts", modifiers: ["Spicy", "Extra Spicy", "With Shito"] },
+  { id: 7, name: "Sobolo", category: "Drinks", price: 15, popular: false, emoji: "", description: "Hibiscus flower drink, chilled", modifiers: ["Extra Sweet", "Less Sugar", "With Ginger"] },
+  { id: 8, name: "Fresh Juice", category: "Drinks", price: 20, popular: false, emoji: "", description: "Freshly squeezed seasonal fruit juice", modifiers: ["Orange", "Pineapple", "Mixed"] },
+  { id: 9, name: "Water", category: "Drinks", price: 5, popular: false, emoji: "", description: "Bottled still water", modifiers: [] },
+  { id: 10, name: "Fufu & Soup", category: "Mains", price: 50, popular: false, emoji: "", description: "Pounded fufu with light or palm nut soup", modifiers: ["Light Soup", "Palm Nut Soup", "Extra Fufu"] },
+  { id: 11, name: "Fried Rice", category: "Mains", price: 40, popular: false, emoji: "", description: "Egg fried rice with vegetables and chicken", modifiers: ["Extra Chicken", "Vegetarian", "Extra Spicy"] },
+  { id: 12, name: "Chin Chin", category: "Desserts", price: 10, popular: false, emoji: "", description: "Crunchy fried dough snack", modifiers: [] },
 ];
 
 export const CATEGORIES = ["All", "Popular", "Mains", "Sides", "Drinks", "Desserts"];

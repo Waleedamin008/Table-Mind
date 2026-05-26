@@ -2,7 +2,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useApp } from '../context/AppContext';
 import { MENU_ITEMS, CATEGORIES, TABLES } from '../data';
-import { Plus, Minus, ShoppingCart, X, Check, Home, QrCode } from 'lucide-react';
+import {
+  Plus, Minus, ShoppingCart, X, Check, Home, QrCode,
+  Utensils, TableProperties, Sparkles, CupSoda, Sandwich, Dessert
+} from 'lucide-react';
+
+// Helper category icon mapping component
+function ItemIcon({ category, size = 24, color = 'var(--terracotta)' }) {
+  const props = { size, color, strokeWidth: 2 };
+  if (category === 'Drinks') return <CupSoda {...props} />;
+  if (category === 'Sides') return <Sandwich {...props} />;
+  if (category === 'Desserts') return <Dessert {...props} />;
+  return <Utensils {...props} />;
+}
 
 export default function QROrderingScreen() {
   const {
@@ -88,8 +100,8 @@ export default function QROrderingScreen() {
         padding: 32, fontFamily: 'var(--font-body)', textAlign: 'center',
       }}>
         <div style={{ animation: 'scaleIn 0.4s ease' }}>
-          <div style={{ width: 80, height: 80, borderRadius: 40, background: 'var(--success-bg)', border: '3px solid var(--success)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: 36 }}>
-            ✅
+          <div style={{ width: 80, height: 80, borderRadius: 40, background: 'var(--success-bg)', border: '3px solid var(--success)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+            <Check size={40} style={{ color: 'var(--success)' }} />
           </div>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, color: 'var(--espresso)', marginBottom: 10 }}>Order Placed!</h2>
           <p style={{ fontSize: 15, color: 'var(--text-secondary)', marginBottom: 8 }}>Your order has been sent to the kitchen.</p>
@@ -98,7 +110,7 @@ export default function QROrderingScreen() {
           <div style={{ background: '#fff', borderRadius: 16, padding: 20, marginBottom: 24, border: '1px solid var(--border)', maxWidth: 300 }}>
             {localCart.map((item, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 13, borderBottom: i < localCart.length - 1 ? '1px solid var(--border)' : 'none' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>{item.name} x{item.qty}</span>
+                <span style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6 }}><ItemIcon category={item.category} size={13} /> {item.name} x{item.qty}</span>
                 <span style={{ fontWeight: 600 }}>GH₵ {item.price * item.qty}</span>
               </div>
             ))}
@@ -122,7 +134,9 @@ export default function QROrderingScreen() {
       <div style={{ background: '#fff', padding: '14px 18px', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 10, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, var(--terracotta), var(--espresso))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>🍽️</div>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, var(--terracotta), var(--espresso))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+              <Utensils size={18} />
+            </div>
             <div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 700, color: 'var(--espresso)' }}>Table<span style={{ color: 'var(--terracotta)' }}>Mind</span></div>
               <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>ordermenu.tablemind.com</div>
@@ -135,7 +149,7 @@ export default function QROrderingScreen() {
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--espresso)' }}>🪑 {tableNumber}</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--espresso)', display: 'flex', alignItems: 'center', gap: 4 }}><TableProperties size={13} /> {tableNumber}</span>
             <span style={{ fontSize: 10, background: 'var(--cream)', color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 10 }}>Dine In</span>
           </div>
           <button
@@ -189,7 +203,6 @@ export default function QROrderingScreen() {
       )}
 
       <div style={{ background: 'linear-gradient(135deg, var(--terracotta), #A03018)', padding: '20px 18px', color: '#fff', position: 'relative', overflow: 'hidden', marginTop: 16 }}>
-        <div style={{ position: 'absolute', right: 16, top: 8, fontSize: 48, opacity: 0.3 }}>🍲</div>
         <div style={{ fontSize: 18, fontWeight: 700, fontFamily: 'var(--font-display)', marginBottom: 4 }}>Craving made simple.</div>
         <div style={{ fontSize: 12, opacity: 0.85 }}>Good food, great experience.</div>
       </div>
@@ -216,11 +229,13 @@ export default function QROrderingScreen() {
               padding: '14px', marginBottom: 10, display: 'flex', gap: 12, alignItems: 'center',
               animation: `fadeIn 0.3s ease ${i * 0.04}s both`,
             }}>
-              <div style={{ fontSize: 36, flexShrink: 0 }}>{item.emoji}</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, flexShrink: 0 }}>
+                <ItemIcon category={item.category} size={30} />
+              </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 2 }}>
                   <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--espresso)' }}>{item.name}</span>
-                  {item.popular && <span style={{ fontSize: 10 }}>🔥</span>}
+                  {item.popular && <Sparkles size={11} style={{ color: 'var(--warning)' }} />}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.4, marginBottom: 6 }}>{item.description}</div>
                 <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--terracotta)', fontFamily: 'var(--font-display)' }}>GH₵ {item.price}</span>
@@ -257,7 +272,7 @@ export default function QROrderingScreen() {
             <div style={{ marginBottom: 12, maxHeight: 200, overflow: 'auto' }}>
               {localCart.map((item, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', fontSize: 13, borderBottom: i < localCart.length - 1 ? '1px solid var(--border)' : 'none' }}>
-                  <span>{item.emoji} {item.name} x{item.qty}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><ItemIcon category={item.category} size={13} /> {item.name} x{item.qty}</span>
                   <span style={{ fontWeight: 700 }}>GH₵ {item.price * item.qty}</span>
                 </div>
               ))}

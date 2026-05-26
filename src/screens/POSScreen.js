@@ -2,7 +2,20 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { OnlineBadge, TimerBadge, useViewport } from '../components/Shared';
 import { MENU_ITEMS, CATEGORIES, TABLES } from '../data';
-import { Search, Plus, Minus, Trash2, ChefHat, Home, X, Check, Menu } from 'lucide-react';
+import {
+  Search, Plus, Minus, Trash2, ChefHat, Home, X, Check, Menu,
+  ClipboardList, TableProperties, Package, Users, BarChart3, Settings,
+  ShoppingBag, Sparkles, CupSoda, Sandwich, Dessert, Utensils
+} from 'lucide-react';
+
+// Helper category icon mapping component
+function ItemIcon({ category, size = 24, color = 'var(--terracotta)' }) {
+  const props = { size, color, strokeWidth: 2 };
+  if (category === 'Drinks') return <CupSoda {...props} />;
+  if (category === 'Sides') return <Sandwich {...props} />;
+  if (category === 'Desserts') return <Dessert {...props} />;
+  return <Utensils {...props} />;
+}
 
 function ModifierModal({ item, onClose, onAdd, isMobile }) {
   const [selected, setSelected] = useState([]);
@@ -104,6 +117,15 @@ export default function POSScreen() {
     : selectedTableOrder;
   const readyPosOrder = activePosOrder?.status === 'ready' ? activePosOrder : null;
 
+  const navIcons = {
+    menu: <ClipboardList size={18} />,
+    tables: <TableProperties size={18} />,
+    orders: <Package size={18} />,
+    customers: <Users size={18} />,
+    reports: <BarChart3 size={18} />,
+    settings: <Settings size={18} />,
+  };
+
   const sideNav = (
     <nav style={{
       width: isMobile ? 'min(82vw, 300px)' : 72,
@@ -117,7 +139,7 @@ export default function POSScreen() {
       boxShadow: isMobile ? '0 18px 42px rgba(0,0,0,0.24)' : 'none',
     }}>
       <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: isMobile ? 'space-between' : 'center', marginBottom: isMobile ? 8 : 12 }}>
-        <div style={{ fontSize: 22, flexShrink: 0 }}>🍽️</div>
+        <div style={{ flexShrink: 0, color: 'var(--terracotta)' }}><Utensils size={24} /></div>
         {isMobile && (
           <button onClick={() => setNavOpen(false)} style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 10, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}>
             <X size={16} />
@@ -126,12 +148,12 @@ export default function POSScreen() {
       </div>
 
       {[
-        { id: 'menu', icon: '📋', label: 'Menu' },
-        { id: 'tables', icon: '🪑', label: 'Tables' },
-        { id: 'orders', icon: '📦', label: 'Orders' },
-        { id: 'customers', icon: '👥', label: 'Guests' },
-        { id: 'reports', icon: '📊', label: 'Reports' },
-        { id: 'settings', icon: '⚙️', label: 'Settings' },
+        { id: 'menu', label: 'Menu' },
+        { id: 'tables', label: 'Tables' },
+        { id: 'orders', label: 'Orders' },
+        { id: 'customers', label: 'Guests' },
+        { id: 'reports', label: 'Reports' },
+        { id: 'settings', label: 'Settings' },
       ].map(n => (
         <button key={n.id} onClick={() => { setNavTab(n.id); setNavOpen(false); }} style={{
           width: isMobile ? '100%' : 52, minWidth: isMobile ? '100%' : 52, height: 52,
@@ -142,7 +164,7 @@ export default function POSScreen() {
           color: navTab === n.id ? '#fff' : 'rgba(255,255,255,0.72)', flexShrink: 0,
           textAlign: 'left',
         }}>
-          <span style={{ fontSize: 16 }}>{n.icon}</span>
+          <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{navIcons[n.id]}</span>
           <span style={{ fontSize: isMobile ? 13 : 8, whiteSpace: 'nowrap', fontWeight: isMobile ? 600 : 400 }}>{n.label}</span>
         </button>
       ))}
@@ -195,7 +217,7 @@ export default function POSScreen() {
                 cursor: 'pointer', fontSize: 12, fontWeight: 600, fontFamily: 'var(--font-body)',
                 color: selectedTable ? 'var(--terracotta)' : 'var(--text-secondary)',
               }}>
-                🪑 {selectedTable ? selectedTable.number : 'Select Table'}
+                <TableProperties size={13} style={{ color: selectedTable ? 'var(--terracotta)' : 'var(--text-secondary)' }} /> {selectedTable ? selectedTable.number : 'Select Table'}
               </button>
             )}
             {selectedTableOrder && <TimerBadge placedAt={selectedTableOrder.placedAt} targetMins={selectedTableOrder.targetMins} />}
@@ -236,8 +258,10 @@ export default function POSScreen() {
                   onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--terracotta)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; }}
                 >
-                  {item.popular && <span style={{ position: 'absolute', top: 8, right: 8, fontSize: 14 }}>🔥</span>}
-                  <div style={{ fontSize: isMobile ? 28 : 34, marginBottom: 8, textAlign: 'center' }}>{item.emoji}</div>
+                  {item.popular && <Sparkles size={13} style={{ position: 'absolute', top: 8, right: 8, color: 'var(--warning)' }} />}
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8, height: 34, alignItems: 'center' }}>
+                    <ItemIcon category={item.category} size={30} />
+                  </div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--espresso)', marginBottom: 2, lineHeight: 1.3 }}>{item.name}</div>
                   <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 8, lineHeight: 1.4 }}>{item.description}</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -270,22 +294,22 @@ export default function POSScreen() {
                   </button>
                 )}
               </div>
-              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'var(--cream)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 11, fontWeight: 700 }}>👥 2</span>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'var(--cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--espresso)' }}>
+                <Users size={14} />
               </div>
             </div>
           </div>
 
           <div style={{ flex: 1, overflow: 'auto', padding: 14, maxHeight: isMobile ? 320 : 'none' }}>
             {cart.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                <div style={{ fontSize: 36, marginBottom: 10 }}>🛒</div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
+                <ShoppingBag size={32} style={{ color: 'var(--text-muted)', marginBottom: 8 }} />
                 <div style={{ fontSize: 13 }}>Your cart is empty</div>
                 <div style={{ fontSize: 11, marginTop: 4 }}>Add items from the menu</div>
               </div>
             ) : cart.map((item, idx) => (
               <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 12, padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
-                <span style={{ fontSize: 20 }}>{item.emoji}</span>
+                <ItemIcon category={item.category} size={18} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--espresso)' }}>{item.name}</div>
                   {item.modifiers.length > 0 && <div style={{ fontSize: 10, color: 'var(--terracotta)' }}>{item.modifiers.join(', ')}</div>}
@@ -354,7 +378,7 @@ export default function POSScreen() {
                     background: t.status === 'available' ? '#fff' : t.status === 'occupied' ? 'var(--terracotta-pale)' : 'var(--warning-bg)',
                     fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600, opacity: t.status === 'occupied' ? 0.6 : 1, color: 'var(--espresso)',
                   }}>
-                    <div style={{ fontSize: 16, marginBottom: 2 }}>🪑</div>
+                    <TableProperties size={18} style={{ marginBottom: 4 }} />
                     <div>{t.number}</div>
                     <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{t.seats} seats</div>
                     {tableOrder && <div style={{ marginTop: 6, display: 'flex', justifyContent: 'center' }}><TimerBadge placedAt={tableOrder.placedAt} targetMins={tableOrder.targetMins} style={{ fontSize: 9, padding: '2px 6px' }} /></div>}

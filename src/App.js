@@ -15,6 +15,10 @@ function Router() {
   const { currentScreen, setCurrentScreen, setSelectedTable, setOrderType } = useApp();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentScreen]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const screen = params.get('screen');
     const table = params.get('table');
