@@ -1,11 +1,8 @@
 node_modules/
 dist/
 build/
-temp_auto_push.bat
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
-.gitignore
-branch_structure.json
 config.bat
